@@ -3,9 +3,17 @@
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\SessionController;
+use App\Jobs\TranslateJob;
+use App\Models\Job;
 use Illuminate\Support\Facades\Route;
 
-Route::get('test', function(){
+Route::get('test', function () {
+    // \App\Jobs\TranslateJob::dispatch();
+    $job = Job::first();
+    TranslateJob::dispatch($job);
+    // dispatch(function () {
+    //     logger("hello from the queue!");
+    // });
     return 'Done';
 });
 
@@ -18,8 +26,8 @@ Route::get('/jobs/create', [JobController::class, 'create']);
 Route::get('/jobs/{job}', [JobController::class, 'show']);
 Route::post('/jobs', [JobController::class, 'store'])->middleware('auth');
 Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])
-->middleware('auth')
-->can('edit', 'job');
+    ->middleware('auth')
+    ->can('edit', 'job');
 Route::put('/jobs/{job}', [JobController::class, 'update']);
 Route::delete('/jobs/{job}', [JobController::class, 'destroy']);
 
